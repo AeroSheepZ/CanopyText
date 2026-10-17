@@ -8,17 +8,18 @@ enum PageHTML {
     <title>文本</title>
     <style>
     :root { color-scheme: dark; }
-    html, body { height: 100%; margin: 0; background: #000; color: #fff; }
+    html, body { margin: 0; background: #000; color: #fff; }
     body {
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      height: 100%;
+      min-height: 100%;
       padding: 10px;
       font: 13px -apple-system, BlinkMacSystemFont, sans-serif;
     }
-    .tabs, .actions { display: flex; gap: 6px; }
+    label { color: rgba(255,255,255,0.72); font-size: 12px; }
+    .tabs, .actions { display: flex; gap: 6px; flex: 0 0 auto; }
     button {
       flex: 1;
       border: 0;
@@ -31,8 +32,9 @@ enum PageHTML {
     button.on { background: rgba(255,255,255,0.32); }
     .actions button { border-radius: 8px; padding: 7px 0; }
     textarea {
-      flex: 1;
-      min-height: 0;
+      flex: 1 1 auto;
+      min-height: 96px;
+      height: 96px;
       resize: none;
       border: 0;
       border-radius: 10px;
@@ -47,8 +49,10 @@ enum PageHTML {
     </head>
     <body>
     <div class="tabs" id="tabs"></div>
+    <label for="input">输入</label>
     <textarea id="input" spellcheck="false"></textarea>
     <div class="actions" id="actions"></div>
+    <label for="output">结果</label>
     <textarea id="output" spellcheck="false" readonly></textarea>
     <div id="status"></div>
     <script>
