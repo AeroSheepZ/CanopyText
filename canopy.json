@@ -1,0 +1,5 @@
+{
+  "id": "com.canopydeck.plugin.text",
+  "name": "文本",
+  "executable": "CanopyText"
+}
