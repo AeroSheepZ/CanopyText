@@ -1,0 +1,15 @@
+{
+  "originHash" : "b49cf62e45db2d91c42aa75c4248c8b499e080de5e00eb38d763be694e702be8",
+  "pins" : [
+    {
+      "identity" : "canopydeck",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AeroSheepZ/CanopyDeck.git",
+      "state" : {
+        "revision" : "a9f2a7dccec569a7be8350023c32c3a7ae023eaf",
+        "version" : "0.11.1"
+      }
+    }
+  ],
+  "version" : 3
+}
