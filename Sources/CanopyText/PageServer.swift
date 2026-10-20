@@ -92,25 +92,46 @@ final class PageServer: @unchecked Sendable {
     private func convert(_ body: Data) -> Data {
         guard let object = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
               let action = object["action"] as? String else {
-            return json(ok: false, text: nil, message: "请求无法识别")
+            return json(ok: false, text: nil, message: "请求无法识别", fields: nil)
         }
         let text = object["text"] as? String ?? ""
+        let options = Self.options(from: object["options"] as? [String: Any])
         do {
-            return json(ok: true, text: try TextTransform.run(action: action, text: text), message: nil)
+            let output = try TextTransform.run(action: action, text: text, options: options)
+            return json(ok: true, text: output.text, message: nil, fields: output.fields)
         } catch let error as TextError {
-            return json(ok: false, text: nil, message: error.message)
+            return json(ok: false, text: nil, message: error.message, fields: nil)
         } catch {
-            return json(ok: false, text: nil, message: "转换没有完成")
+            return json(ok: false, text: nil, message: "转换没有完成", fields: nil)
         }
     }
 
-    private func json(ok: Bool, text: String?, message: String?) -> Data {
+    /// 缺省与页面第一次打开一致：排序键开着，Base64 用标准字母表，URL 按片段编码。
+    private static func options(from object: [String: Any]?) -> TransformOptions {
+        var options = TransformOptions()
+        guard let object else { return options }
+        if let sortKeys = object["sortKeys"] as? Bool {
+            options.sortKeys = sortKeys
+        }
+        if let urlSafe = object["urlSafe"] as? Bool {
+            options.urlSafe = urlSafe
+        }
+        if let scope = object["scope"] as? String, scope == "full" || scope == "component" {
+            options.scope = scope
+        }
+        return options
+    }
+
+    private func json(ok: Bool, text: String?, message: String?, fields: [String: String]?) -> Data {
         var object: [String: Any] = ["ok": ok]
         if let text {
             object["text"] = text
         }
         if let message {
             object["message"] = message
+        }
+        if let fields {
+            object["fields"] = fields
         }
         return (try? JSONSerialization.data(withJSONObject: object)) ?? Data("{\"ok\":false}".utf8)
     }
