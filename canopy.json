@@ -1,5 +1,5 @@
 {
   "id": "com.canopydeck.plugin.text",
-  "name": "文本",
+  "name": "转换器",
   "executable": "CanopyText"
 }

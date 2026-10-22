@@ -11,27 +11,27 @@ enum TextToolMain {
         do {
             server = try PageServer.start()
         } catch {
-            fputs("文本页面没有绑上端口: \(error)\n", stderr)
+            fputs("转换器页面没有绑上端口: \(error)\n", stderr)
             exit(1)
         }
-        fputs("文本页面 http://127.0.0.1:\(server.port)/\n", stderr)
+        fputs("转换器页面 http://127.0.0.1:\(server.port)/\n", stderr)
         let peer = ToolPeer.stdio()
         peer.send(.hello(ToolManifest(
             id: pluginID,
-            name: "文本",
+            name: "转换器",
             commands: [
                 ToolCommandSpec(
                     id: openCommandID,
-                    title: "打开文本",
-                    systemImage: "textformat",
+                    title: "打开转换器",
+                    systemImage: "arrow.left.arrow.right",
                     showsPage: true
                 )
             ],
             panels: [
                 ToolPanelSpec(
                     id: panelID,
-                    title: "文本",
-                    systemImage: "textformat",
+                    title: "转换器",
+                    systemImage: "arrow.left.arrow.right",
                     pageURL: "http://127.0.0.1:\(server.port)/"
                 )
             ]

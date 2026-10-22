@@ -5,7 +5,7 @@ enum PageHTML {
     <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>文本</title>
+    <title>转换器</title>
     <style>
     :root { color-scheme: dark; }
     html, body {

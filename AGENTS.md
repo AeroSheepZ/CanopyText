@@ -4,7 +4,7 @@
 
 ## 仓库边界
 
-CanopyText 是 CanopyDeck 的外部工具，独立进程。清单在仓库根的 `canopy.json`：`id` 是 `com.canopydeck.plugin.text`，`executable` 是 `CanopyText`。进程 hello 里的标识必须和这份清单一致，否则宿主会卸掉。
+CanopyText 是 CanopyDeck 的外部工具，独立进程。清单在仓库根的 `canopy.json`：`id` 是 `com.canopydeck.plugin.text`，`name` 是「转换器」，`executable` 是 `CanopyText`。轨道和命令图标是 `arrow.left.arrow.right`。标识保持不变。进程 hello 里的标识必须和这份清单一致，否则宿主会卸掉。
 
 宿主不编译本仓库，也不运行这里的构建脚本。它钉住默认分支当前提交，找到指向同一提交的 git 标签，再从该标签的 GitHub Release 下载与 `executable` 同名的资源。没有这个 Release，或资源名不是 `CanopyText`，插件页会报「这个提交没有对应的 Release，或 Release 里没有清单写的可执行文件」。只推送提交装不上。
 
