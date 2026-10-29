@@ -36,17 +36,17 @@ enum TextTransform {
         case "time.now":
             return TransformOutput(fields: timeFields(Date()))
         default:
-            throw TextError(message: "未知动作")
+            throw TextError(message: TextL10n.t("未知动作"))
         }
     }
 
     /// 先确认是合法 JSON。排序时交给系统重排键，再统一排成两空格缩进，避免开关键序被打乱。
     private static func json(_ text: String, pretty: Bool, sortKeys: Bool) throws -> String {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { throw TextError(message: "没有内容") }
+        guard !trimmed.isEmpty else { throw TextError(message: TextL10n.t("没有内容")) }
         guard let data = trimmed.data(using: .utf8),
               (try? JSONSerialization.jsonObject(with: data)) != nil else {
-            throw TextError(message: "不是合法的 JSON")
+            throw TextError(message: TextL10n.t("不是合法的 JSON"))
         }
         let source = sortKeys ? try sortedCompact(data) : trimmed
         if let formatted = formatPreservingOrder(source, pretty: pretty),
@@ -64,7 +64,7 @@ enum TextTransform {
             options: [.sortedKeys, .withoutEscapingSlashes]
         )
         guard let output = String(data: written, encoding: .utf8) else {
-            throw TextError(message: "不是合法的 JSON")
+            throw TextError(message: TextL10n.t("不是合法的 JSON"))
         }
         return output
     }
@@ -80,7 +80,7 @@ enum TextTransform {
         }
         let written = try JSONSerialization.data(withJSONObject: object, options: options)
         guard let output = String(data: written, encoding: .utf8) else {
-            throw TextError(message: "不是合法的 JSON")
+            throw TextError(message: TextL10n.t("不是合法的 JSON"))
         }
         return output
     }
@@ -120,7 +120,7 @@ enum TextTransform {
                 tokens.append(.literal(literal))
                 continue
             }
-            throw TextError(message: "不是合法的 JSON")
+            throw TextError(message: TextL10n.t("不是合法的 JSON"))
         }
         return tokens
     }
@@ -142,7 +142,7 @@ enum TextTransform {
                 break
             }
         }
-        guard closed else { throw TextError(message: "不是合法的 JSON") }
+        guard closed else { throw TextError(message: TextL10n.t("不是合法的 JSON")) }
         return String(text[start..<index])
     }
 
@@ -152,7 +152,7 @@ enum TextTransform {
             index = text.index(after: index)
         }
         guard index < text.endIndex, text[index].isNumber else {
-            throw TextError(message: "不是合法的 JSON")
+            throw TextError(message: TextL10n.t("不是合法的 JSON"))
         }
         if text[index] == "0" {
             index = text.index(after: index)
@@ -164,7 +164,7 @@ enum TextTransform {
         if index < text.endIndex, text[index] == "." {
             index = text.index(after: index)
             guard index < text.endIndex, text[index].isNumber else {
-                throw TextError(message: "不是合法的 JSON")
+                throw TextError(message: TextL10n.t("不是合法的 JSON"))
             }
             while index < text.endIndex, text[index].isNumber {
                 index = text.index(after: index)
@@ -176,7 +176,7 @@ enum TextTransform {
                 index = text.index(after: index)
             }
             guard index < text.endIndex, text[index].isNumber else {
-                throw TextError(message: "不是合法的 JSON")
+                throw TextError(message: TextL10n.t("不是合法的 JSON"))
             }
             while index < text.endIndex, text[index].isNumber {
                 index = text.index(after: index)
@@ -284,7 +284,7 @@ enum TextTransform {
     }
 
     private static func base64Encode(_ text: String, urlSafe: Bool) throws -> String {
-        guard !text.isEmpty else { throw TextError(message: "没有内容") }
+        guard !text.isEmpty else { throw TextError(message: TextL10n.t("没有内容")) }
         var encoded = Data(text.utf8).base64EncodedString()
         if urlSafe {
             encoded = encoded
@@ -297,41 +297,41 @@ enum TextTransform {
 
     private static func base64Decode(_ text: String, urlSafe: Bool) throws -> String {
         var compact = String(text.unicodeScalars.filter { !CharacterSet.whitespacesAndNewlines.contains($0) })
-        guard !compact.isEmpty else { throw TextError(message: "没有内容") }
+        guard !compact.isEmpty else { throw TextError(message: TextL10n.t("没有内容")) }
         if urlSafe {
             compact = compact.replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
             if !compact.contains("=") {
                 let remainder = compact.count % 4
-                guard remainder != 1 else { throw TextError(message: "不是合法的 Base64") }
+                guard remainder != 1 else { throw TextError(message: TextL10n.t("不是合法的 Base64")) }
                 if remainder > 0 {
                     compact += String(repeating: "=", count: 4 - remainder)
                 }
             }
         }
         guard let data = Data(base64Encoded: compact) else {
-            throw TextError(message: "不是合法的 Base64")
+            throw TextError(message: TextL10n.t("不是合法的 Base64"))
         }
         guard let output = String(data: data, encoding: .utf8) else {
-            throw TextError(message: "Base64 解出来不是文本")
+            throw TextError(message: TextL10n.t("Base64 解出来不是文本"))
         }
         return output
     }
 
     /// 片段对应 encodeURIComponent，整段对应 encodeURI。
     private static func urlEncode(_ text: String, scope: String) throws -> String {
-        guard !text.isEmpty else { throw TextError(message: "没有内容") }
+        guard !text.isEmpty else { throw TextError(message: TextL10n.t("没有内容")) }
         let allowed = scope == "full" ? fullURLAllowed : componentURLAllowed
         guard let encoded = text.addingPercentEncoding(withAllowedCharacters: allowed) else {
-            throw TextError(message: "无法编码")
+            throw TextError(message: TextL10n.t("无法编码"))
         }
         return encoded
     }
 
     private static func urlDecode(_ text: String) throws -> String {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { throw TextError(message: "没有内容") }
+        guard !trimmed.isEmpty else { throw TextError(message: TextL10n.t("没有内容")) }
         guard let decoded = trimmed.removingPercentEncoding else {
-            throw TextError(message: "不是合法的百分号编码")
+            throw TextError(message: TextL10n.t("不是合法的百分号编码"))
         }
         return decoded
     }
@@ -350,16 +350,16 @@ enum TextTransform {
 
     private static func timeParse(_ text: String) throws -> [String: String] {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { throw TextError(message: "没有内容") }
+        guard !trimmed.isEmpty else { throw TextError(message: TextL10n.t("没有内容")) }
         if trimmed.allSatisfy(\.isNumber) {
             guard trimmed.count == 10 || trimmed.count == 13, let raw = Double(trimmed) else {
-                throw TextError(message: "时间戳要是 10 位的秒或 13 位的毫秒")
+                throw TextError(message: TextL10n.t("时间戳要是 10 位的秒或 13 位的毫秒"))
             }
             let seconds = trimmed.count == 13 ? raw / 1000 : raw
             return timeFields(Date(timeIntervalSince1970: seconds))
         }
         guard let date = parseDate(trimmed) else {
-            throw TextError(message: "认不出这个时间，用 2026-10-17 11:14:00 这种写法")
+            throw TextError(message: TextL10n.t("认不出这个时间，用 2026-10-17 11:14:00 这种写法"))
         }
         return timeFields(date)
     }

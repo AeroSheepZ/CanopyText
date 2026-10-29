@@ -62,7 +62,7 @@ final class PageServer: @unchecked Sendable {
                 next.append(data)
             }
             if next.count > Self.maxBytes {
-                self.finish(connection, status: 413, type: "text/plain; charset=utf-8", body: Data("请求过大".utf8))
+                self.finish(connection, status: 413, type: "text/plain; charset=utf-8", body: Data(TextL10n.t("请求过大").utf8))
                 return
             }
             if let request = Self.parse(next) {
@@ -86,13 +86,13 @@ final class PageServer: @unchecked Sendable {
             finish(connection, status: 200, type: "application/json; charset=utf-8", body: convert(request.body))
             return
         }
-        finish(connection, status: 404, type: "text/plain; charset=utf-8", body: Data("找不到".utf8))
+        finish(connection, status: 404, type: "text/plain; charset=utf-8", body: Data(TextL10n.t("找不到").utf8))
     }
 
     private func convert(_ body: Data) -> Data {
         guard let object = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
               let action = object["action"] as? String else {
-            return json(ok: false, text: nil, message: "请求无法识别", fields: nil)
+            return json(ok: false, text: nil, message: TextL10n.t("请求无法识别"), fields: nil)
         }
         let text = object["text"] as? String ?? ""
         let options = Self.options(from: object["options"] as? [String: Any])
@@ -102,7 +102,7 @@ final class PageServer: @unchecked Sendable {
         } catch let error as TextError {
             return json(ok: false, text: nil, message: error.message, fields: nil)
         } catch {
-            return json(ok: false, text: nil, message: "转换没有完成", fields: nil)
+            return json(ok: false, text: nil, message: TextL10n.t("转换没有完成"), fields: nil)
         }
     }
 

@@ -10,7 +10,7 @@ let package = Package(
         .executable(name: "CanopyText", targets: ["CanopyText"])
     ],
     dependencies: [
-        .package(url: "https://github.com/AeroSheepZ/CanopyDeck.git", exact: "0.11.1")
+        .package(url: "https://github.com/AeroSheepZ/CanopyDeck.git", exact: "0.17.1")
     ],
     targets: [
         .executableTarget(

@@ -1,6 +1,6 @@
 # 转换器
 
-CanopyDeck 的外部工具。打开之后是一页，JSON、Base64、URL、时间各占一块。
+CanopyDeck 的外部工具。打开之后是一页，JSON、Base64、URL、时间各占一块。界面跟随宿主写入的语言环境键（简体中文 / English），网页跟系统浅深色。
 
 在 CanopyDeck 的插件页填写 `AeroSheepZ/CanopyText` 安装。
 
